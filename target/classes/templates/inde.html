@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OrganizaTarefas</title>
+
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>OrganizaTarefas</h1>
+        <p style="text-align: center;">Organize suas tarefas em um só lugar!</p>
+
+        <div class="painel">
+            <h2>Cadastrar nova tarefa</h2>
+
+            <form action="/salvar" method="post">
+                <label>Título:</label>
+                <input type="text" name="titulo" required>
+
+                <label>Descrição:</label>
+                <textarea name="descricao" rows="3"></textarea>
+
+                <label>Data de vencimento:</label>
+                <input type="date" name="dataVencimento">
+
+                <label>Categoria:</label>
+                <select name="categoriaId" required>
+                    <option value="">Selecione uma categoria</option>
+                    <option th:each="categoria : ${categorias}"
+                            th:value="${categoria.id}"
+                            th:text="${categoria.nome}">
+                    </option>
+                </select>
+
+                <button type="submit">Cadastrar tarefa</button>
+            </form>
+        </div>
+
+        <div class="painel">
+            <h2>Minhas tarefas</h2>
+
+            <p>
+                Total de tarefas:
+                <strong th:text="${total}">0</strong>
+            </p>
+
+            <div th:if="${#lists.isEmpty(tarefas)}">
+                Nenhuma tarefa cadastrada ainda.
+            </div>
+
+            <div class="tarefa" th:each="tarefa : ${tarefas}">
+                <h3 th:text="${tarefa.titulo}"></h3>
+
+                <p>
+                    <strong>Descrição:</strong>
+                    <span th:text="${tarefa.descricao}"></span>
+                </p>
+
+                <p>
+                    <strong>Vencimento:</strong>
+                    <span th:text="${tarefa.data_vencimento != null ? tarefa.data_vencimento : 'Não informado'}"></span>
+                </p>
+
+                <p>
+                    <strong>Categoria:</strong>
+                    <span th:text="${tarefa.categoria}"></span>
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    <span th:text="${tarefa.status}"></span>
+                </p>
+
+                <hr>
+
+                <h4>Editar tarefa</h4>
+
+                <form action="/editar" method="post">
+                    <input type="hidden" name="id" th:value="${tarefa.id}">
+
+                    <label>Título:</label>
+                    <input type="text" name="titulo"
+                           th:value="${tarefa.titulo}" required>
+
+                    <label>Descrição:</label>
+                    <textarea name="descricao" rows="2"
+                              th:text="${tarefa.descricao}"></textarea>
+
+                    <label>Data de vencimento:</label>
+                    <input type="date" name="dataVencimento"
+                           th:value="${tarefa.data_vencimento}">
+
+                    <label>Status:</label>
+                    <select name="status" required>
+                        <option value="Pendente"
+                                th:selected="${tarefa.status == 'Pendente'}">
+                            Pendente
+                        </option>
+                        <option value="Em andamento"
+                                th:selected="${tarefa.status == 'Em andamento'}">
+                            Em andamento
+                        </option>
+                        <option value="Concluída"
+                                th:selected="${tarefa.status == 'Concluída'}">
+                            Concluída
+                        </option>
+                    </select>
+
+                    <label>Categoria:</label>
+                    <select name="categoriaId" required>
+                        <option th:each="categoria : ${categorias}"
+                                th:value="${categoria.id}"
+                                th:text="${categoria.nome}"
+                                th:selected="${categoria.id == tarefa.categoria_id}">
+                        </option>
+                    </select>
+
+                    <button type="submit">Salvar alterações</button>
+                </form>
+
+                <form action="/excluir" method="post"
+                      onsubmit="return confirm('Deseja excluir esta tarefa?');">
+                    <input type="hidden" name="id" th:value="${tarefa.id}">
+                    <button type="submit" class="excluir">Excluir tarefa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
