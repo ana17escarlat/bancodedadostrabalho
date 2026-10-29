@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OrganizaTarefas</title>
 
-<link rel="stylesheet" th:href="@{/css/style.css}">
-
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
@@ -44,10 +43,29 @@
         <div class="painel">
             <h2>Minhas tarefas</h2>
 
-            <p>
-                Total de tarefas:
-                <strong th:text="${total}">0</strong>
-            </p>
+            <div class="painel">
+                <h3>Resumo das tarefas</h3>
+
+                <p>
+                    Total de tarefas:
+                    <strong th:text="${total}">0</strong>
+                </p>
+
+                <p>
+                    Pendentes:
+                    <strong th:text="${pendentes}">0</strong>
+                </p>
+
+                <p>
+                    Em andamento:
+                    <strong th:text="${emAndamento}">0</strong>
+                </p>
+
+                <p>
+                    Concluídas:
+                    <strong th:text="${concluidas}">0</strong>
+                </p>
+            </div>
 
             <div th:if="${#lists.isEmpty(tarefas)}">
                 Nenhuma tarefa cadastrada ainda.
