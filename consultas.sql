@@ -1,4 +1,19 @@
 -- 1. JOIN: tarefas com suas categorias
+CREATE OR REPLACE VIEW vw_tarefas_categoria AS
+SELECT
+    t.id,
+    t.titulo,
+    t.descricao,
+    t.data_vencimento,
+    t.status,
+    t.categoria_id,
+    c.nome AS categoria
+FROM tarefas t
+INNER JOIN categorias c
+    ON t.categoria_id = c.id;
+
+
+-- 2. COUNT: quantidade de tarefas por status
 CREATE OR REPLACE VIEW vw_tarefas_status AS
 SELECT
     s.status,
@@ -11,14 +26,6 @@ FROM (
 LEFT JOIN tarefas t
     ON s.status = t.status
 GROUP BY s.status;
-
--- 2. COUNT: quantidade de tarefas por status
-CREATE OR REPLACE VIEW vw_tarefas_status AS
-SELECT
-    status,
-    COUNT(*) AS quantidade
-FROM tarefas
-GROUP BY status;
 
 
 -- 3. SUM: total de tarefas por categoria

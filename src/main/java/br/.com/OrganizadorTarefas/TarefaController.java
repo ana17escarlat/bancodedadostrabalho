@@ -39,24 +39,23 @@ public class TarefaController {
             Integer.class
         );
 
-        // Busca as quantidades pela VIEW que utiliza COUNT
-        Integer pendentes = jdbc.queryForObject(
-            "SELECT quantidade FROM vw_tarefas_status WHERE status = ?",
-            Integer.class,
-            "Pendente"
-        );
+       Integer pendentes = jdbc.queryForObject(
+    "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
+    Integer.class,
+    "Pendente"
+);
 
-        Integer emAndamento = jdbc.queryForObject(
-            "SELECT quantidade FROM vw_tarefas_status WHERE status = ?",
-            Integer.class,
-            "Em andamento"
-        );
+Integer emAndamento = jdbc.queryForObject(
+    "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
+    Integer.class,
+    "Em andamento"
+);
 
-        Integer concluidas = jdbc.queryForObject(
-            "SELECT quantidade FROM vw_tarefas_status WHERE status = ?",
-            Integer.class,
-            "Concluída"
-        );
+Integer concluidas = jdbc.queryForObject(
+    "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
+    Integer.class,
+    "Concluída"
+);
 
         // Busca a média de tarefas por categoria pela VIEW que utiliza AVG
         Double mediaCategoria = jdbc.queryForObject(
