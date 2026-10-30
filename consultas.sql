@@ -1,17 +1,16 @@
 -- 1. JOIN: tarefas com suas categorias
-CREATE OR REPLACE VIEW vw_tarefas_categoria AS
+CREATE OR REPLACE VIEW vw_tarefas_status AS
 SELECT
-    t.id,
-    t.titulo,
-    t.descricao,
-    t.data_vencimento,
-    t.status,
-    t.categoria_id,
-    c.nome AS categoria
-FROM tarefas t
-INNER JOIN categorias c
-    ON t.categoria_id = c.id;
-
+    s.status,
+    COUNT(t.id) AS quantidade
+FROM (
+    SELECT 'Pendente' AS status
+    UNION ALL SELECT 'Em andamento'
+    UNION ALL SELECT 'Concluída'
+) s
+LEFT JOIN tarefas t
+    ON s.status = t.status
+GROUP BY s.status;
 
 -- 2. COUNT: quantidade de tarefas por status
 CREATE OR REPLACE VIEW vw_tarefas_status AS
