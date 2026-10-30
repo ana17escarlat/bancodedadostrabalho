@@ -40,9 +40,27 @@ public class TarefaController {
             "SELECT COUNT(*) FROM tarefas", Integer.class
         );
 
+        Integer pendentes = jdbc.queryForObject(
+            "SELECT COUNT(*) FROM tarefas WHERE status = 'Pendente'",
+            Integer.class
+        );
+
+        Integer emAndamento = jdbc.queryForObject(
+            "SELECT COUNT(*) FROM tarefas WHERE status = 'Em andamento'",
+            Integer.class
+        );
+
+        Integer concluidas = jdbc.queryForObject(
+            "SELECT COUNT(*) FROM tarefas WHERE status = 'Concluída'",
+            Integer.class
+        );
+
         model.addAttribute("tarefas", tarefas);
         model.addAttribute("categorias", categorias);
         model.addAttribute("total", total);
+        model.addAttribute("pendentes", pendentes);
+        model.addAttribute("emAndamento", emAndamento);
+        model.addAttribute("concluidas", concluidas);
 
         return "index";
     }
