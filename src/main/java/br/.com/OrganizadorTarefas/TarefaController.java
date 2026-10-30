@@ -24,35 +24,44 @@ public class TarefaController {
     @GetMapping("/")
     public String listar(Model model) {
 
+        // Busca as tarefas utilizando a VIEW que contém o JOIN
         List<Map<String, Object>> tarefas = jdbc.queryForList(
-            "SELECT t.id, t.titulo, t.descricao, t.data_vencimento, " +
-            "t.status, t.categoria_id, c.nome AS categoria " +
-            "FROM tarefas t " +
-            "JOIN categorias c ON t.categoria_id = c.id " +
-            "ORDER BY t.id DESC"
+            "SELECT * FROM vw_tarefas_categoria ORDER BY id DESC"
         );
 
         List<Map<String, Object>> categorias = jdbc.queryForList(
             "SELECT id, nome FROM categorias ORDER BY nome"
         );
 
+        // Busca o total de tarefas pela VIEW que utiliza SUM
         Integer total = jdbc.queryForObject(
-            "SELECT COUNT(*) FROM tarefas", Integer.class
+            "SELECT total_tarefas FROM vw_total_categoria",
+            Integer.class
         );
 
+        // Busca as quantidades pela VIEW que utiliza COUNT
         Integer pendentes = jdbc.queryForObject(
-            "SELECT COUNT(*) FROM tarefas WHERE status = 'Pendente'",
-            Integer.class
+            "SELECT quantidade FROM vw_tarefas_status WHERE status = ?",
+            Integer.class,
+            "Pendente"
         );
 
         Integer emAndamento = jdbc.queryForObject(
-            "SELECT COUNT(*) FROM tarefas WHERE status = 'Em andamento'",
-            Integer.class
+            "SELECT quantidade FROM vw_tarefas_status WHERE status = ?",
+            Integer.class,
+            "Em andamento"
         );
 
         Integer concluidas = jdbc.queryForObject(
-            "SELECT COUNT(*) FROM tarefas WHERE status = 'Concluída'",
-            Integer.class
+            "SELECT quantidade FROM vw_tarefas_status WHERE status = ?",
+            Integer.class,
+            "Concluída"
+        );
+
+        // Busca a média de tarefas por categoria pela VIEW que utiliza AVG
+        Double mediaCategoria = jdbc.queryForObject(
+            "SELECT media_tarefas FROM vw_media_categoria",
+            Double.class
         );
 
         model.addAttribute("tarefas", tarefas);
@@ -61,6 +70,7 @@ public class TarefaController {
         model.addAttribute("pendentes", pendentes);
         model.addAttribute("emAndamento", emAndamento);
         model.addAttribute("concluidas", concluidas);
+        model.addAttribute("mediaCategoria", mediaCategoria);
 
         return "index";
     }
