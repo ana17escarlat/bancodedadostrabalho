@@ -1,6 +1,7 @@
 
 package br.com.organizatarefas;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,35 +34,43 @@ public class TarefaController {
             "SELECT id, nome FROM categorias ORDER BY nome"
         );
 
-        // Busca o total de tarefas pela VIEW que utiliza SUM
-        Integer total = jdbc.queryForObject(
+        // Busca o total de tarefas
+        Long totalLong = jdbc.queryForObject(
             "SELECT total_tarefas FROM vw_total_categoria",
-            Integer.class
+            Long.class
         );
+        Integer total = totalLong != null ? totalLong.intValue() : 0;
 
-       Integer pendentes = jdbc.queryForObject(
-    "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
-    Integer.class,
-    "Pendente"
-);
+        // Busca pendentes
+        Long pendentesLong = jdbc.queryForObject(
+            "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
+            Long.class,
+            "Pendente"
+        );
+        Integer pendentes = pendentesLong != null ? pendentesLong.intValue() : 0;
 
-Integer emAndamento = jdbc.queryForObject(
-    "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
-    Integer.class,
-    "Em andamento"
-);
+        // Busca em andamento
+        Long emAndamentoLong = jdbc.queryForObject(
+            "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
+            Long.class,
+            "Em andamento"
+        );
+        Integer emAndamento = emAndamentoLong != null ? emAndamentoLong.intValue() : 0;
 
-Integer concluidas = jdbc.queryForObject(
-    "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
-    Integer.class,
-    "Concluída"
-);
+        // Busca concluídas
+        Long concluidasLong = jdbc.queryForObject(
+            "SELECT COALESCE(MAX(quantidade), 0) FROM vw_tarefas_status WHERE status = ?",
+            Long.class,
+            "Concluída"
+        );
+        Integer concluidas = concluidasLong != null ? concluidasLong.intValue() : 0;
 
-        // Busca a média de tarefas por categoria pela VIEW que utiliza AVG
-        Double mediaCategoria = jdbc.queryForObject(
+        // Busca a média de tarefas por categoria
+        BigDecimal mediaDecimal = jdbc.queryForObject(
             "SELECT media_tarefas FROM vw_media_categoria",
-            Double.class
+            BigDecimal.class
         );
+        Double mediaCategoria = mediaDecimal != null ? mediaDecimal.doubleValue() : 0.0;
 
         model.addAttribute("tarefas", tarefas);
         model.addAttribute("categorias", categorias);
@@ -122,5 +131,7 @@ Integer concluidas = jdbc.queryForObject(
         );
 
         return "redirect:/";
-    }
+    
+    } 
+
 }
