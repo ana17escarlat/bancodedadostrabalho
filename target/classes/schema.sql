@@ -31,3 +31,5 @@ SELECT 'Trabalho'
 WHERE NOT EXISTS (
     SELECT 1 FROM categorias WHERE nome = 'Trabalho'
 );
+  
+
